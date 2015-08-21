@@ -22,6 +22,5 @@ struct RSDPDescriptor fRSDP(struct RSDPDescriptor){
 	int i = 0;
 	while(start < 0x000FFFFF){
 		start++;
-//		if(start == 'R' && start++ == 'S' && start++ == 'D' && start++ == ' ' && start++ == 'P'
 	}
 }
