@@ -47,7 +47,7 @@ int countsp(char *s){
 	return ret;
 }
 void kernel_loader_main(){
-	kprintf("x86 ZOS Kernel\n");
+	kprintf("x86 Simple Kernel\n");
 	kprintf("(c) 2015 Zachary James Schlotman\n");
 	kprintf("Libc dist by newlib\n");
 	int i = 123;

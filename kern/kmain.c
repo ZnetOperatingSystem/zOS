@@ -21,11 +21,8 @@ void kernel_main(int a,char *b){
 	t_init();
 	int i = 0;
 	int commandnum = 4;
-	char *mtest = malloc(1024);;
-	kstrcpy(mtest,"Test");
-	kprintf("%s",mtest);
 	char *commands[] = {"ls","help","memlist","echo"};
-	kprintf("\nZnet kernel x86\n");
+	kprintf("\nSimple kernel x86\n");
 	kprintf("Initial Runlevel 1\n");
 	kprintf("Modprobe:");
 	char *str = malloc(1024);
