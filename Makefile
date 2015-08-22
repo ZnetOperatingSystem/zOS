@@ -10,4 +10,5 @@ all:
 	make -C mem
 	make -C lib
 	make -C str
-	i386-elf-gcc */*.o -o simp.kernel -T linker.ld  -nostdlib -ffreestanding
+	make -C drivers
+	i386-elf-gcc */*.o drivers/PCI/IDE/controller/*.o -o simp.kernel -T linker.ld  -nostdlib -ffreestanding

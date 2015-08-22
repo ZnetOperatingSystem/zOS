@@ -21,12 +21,16 @@ void kernel_main(int a,char *b){
 	t_init();
 	int i = 0;
 	int commandnum = 4;
+	char *mtest = malloc(80);
+	kstrcpy(mtest,"test");
+	//kprintf("%s\n",mtest);
 	char *commands[] = {"ls","help","memlist","echo"};
 	kprintf("\nSimple kernel x86\n");
 	kprintf("Initial Runlevel 1\n");
 	kprintf("Modprobe:");
 	char *str = malloc(1024);
 	kstrcpy(str,b);
+	//kprintf("%s\n",str);
 	kprintf("Failed!\n");
 	kprintf("Begin mount\n");
 	if(strcmp(str,"HLT") == 0){

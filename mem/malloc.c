@@ -94,7 +94,7 @@ void *malloc(unsigned long ssize){
 			tmppg.data[0] = pg->startmemory;
 			tmppg.data[1] = pg->endmemory;
 			unsigned int start = pg->startmemory;
-			int i = 0;
+			int i = pg->pos;
 			while(start < pg->endmemory){
 				ret[i] = start;
 				start++;
@@ -115,6 +115,7 @@ void *malloc(unsigned long ssize){
 				startmem++;
 
 			}
+			pg->pos = (tmppg.pos);
 		}
 	}
 }
