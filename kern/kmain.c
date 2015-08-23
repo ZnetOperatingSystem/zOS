@@ -12,20 +12,120 @@ unsigned long __strlen(const char *s1){
 		len++;
 	return len;
 }
+int char2int(char c){
+	if(c == 'a')
+		return 0;
+	else if(c == 'b')
+		return 1;
+	else if(c == 'c')
+		return 2;
+	else if(c == 'd')
+		return 3;
+	else if(c == 'e')
+		return 4;
+        else if(c == 'f')
+                return 5;
+
+        else if(c == 'g')
+                return 6;
+
+        else if(c == 'h')
+                return 7;
+
+        else if(c == 'i')
+                return 8;
+
+        else if(c == 'j')
+                return 9;
+
+        else if(c == 'k')
+                return 10;
+
+        else if(c == 'l')
+                return 11;
+
+        else if(c == 'm')
+                return 12;
+
+        else if(c == 'n')
+                return 13;
+
+        else if(c == 'o')
+                return 14;
+
+        else if(c == 'p')
+                return 15;
+
+        else if(c == 'q')
+                return 16;
+
+        else if(c == 'r')
+                return 17;
+
+        else if(c == 's')
+                return 18;
+
+        else if(c == 't')
+                return 19;
+
+        else if(c == 'u')
+                return 20;
+
+        else if(c == 'v')
+                return 21;
+
+        else if(c == 'w')
+                return 22;
+
+        else if(c == 'x')
+                return 23;
+
+        else if(c == 'y')
+                return 24;
+
+        else if(c == 'z')
+                return 25;
+	else if(c == '1')
+		return 26;
+	else if(c == '2')
+                return 27;
+
+	else if(c == '3')
+                return 28;
+
+	else if(c == '4')
+                return 29;
+
+	else if(c == '5')
+                return 30;
+
+	else if(c == '6')
+                return 31;
+
+	else if(c == '7')
+                return 32;
+
+	else if(c == '8')
+                return 33;
+
+	else if(c == '9')
+                return 34;
+
+	else if(c == '0')
+                return 35;
+	else
+		return -1;
+
+
+}
 int nstrcmp(const char *s1,const char *s2){
 	int i = 0;
-	while(i < __strlen(s1)){
-		if(s1[i] == s2[i]){
-			//kprintf("%c%c",s1[i],s2[i]);
-			i++;
-		}
-		else{
-			return i;
-		}
+	if(strlen(s1) != strlen(s2))
+		return -2;
+	while(i < strlen(s1)){
+		if(s1[i] != s2[i])
+			return (i+1);
 		i++;
-	}
-	if(i == __strlen(s1)){
-		return 0;
 	}
 	return 0;
 }
@@ -51,7 +151,7 @@ void kernel_main(int a,char *b){
 		//halt();
 		
 	//}
-	if(b[0] == 'P' && b[1] == 'A' && b[2] == 0){
+	if(b[0] == 'p' && b[1] == 'a' && b[2] == 0){
 		
 	}else
 		panic();
@@ -59,41 +159,34 @@ void kernel_main(int a,char *b){
 	char *str = malloc(80);
 	kprintf("$");
 	char oldc;
-	
+	//kprintf("%s\n",str);
+	i = 0;
 	while(1){
 		//shell_gets(str);
-		int i = 0;
 		char c = kgetc();
-		if(c == oldc)
-			continue;
 		if(c == '\001')
+			continue;
+		if(c == oldc)
 			continue;
 		oldc = c;
 		t_putc(c);
-		kstrcat(str,str);
-		//kstrcat(str,kgets());
-		kstrcat(str,kgetc());
-		if(kgetc() != '\n')
-		 	continue;
-		//str = kgets();
-		//kprintf("\n$");
-		//while (i < strlen(str)){
-			//kprintf("%c",str[i]);
-		//	i++;
-		//}
-		kprintf("%s\n",str);
-		//kprintf("%s\n",str);
-		if(nstrcmp(str,"LS") == 0){
+		if(c != '\n'){
+			str[i] = c;
+			i++;
+		}
+		if(c != '\n')
+			continue;
+		if(nstrcmp(str,"ls") == 0){
 			kprintf("Mount not implemented\n");
 		}
-		else if(nstrcmp(str,"HELP") == 0){
+		else if(nstrcmp(str,"help") == 0){
 			i = 0;
                         while (i < commandnum){
                                 kprintf("%s\n",commands[i]);
                                 i++;
                         }
 		}
-		else if(nstrcmp(str,"MEMLIST") == 0){
+		else if(nstrcmp(str,"memlist") == 0){
 			i = 0;
 			while(i < 524288){
 				char c = (char)0x00000001;
@@ -102,10 +195,19 @@ void kernel_main(int a,char *b){
 				i++;
 			}
 		}
+		else if(nstrcmp(str,"echo") == 0){
+			kprintf("%s\n",str);
+		}
 		else{
-
+			kprintf("Command not found\n");
 		}
 		kprintf("$");
-		str = malloc(1024);
+		str = malloc(80);
+		str[0] = '\0';
+		i = 0;
+		c = 0;
+		for(int i = 0; i < 80; i++){
+			str[i] = '\0';
+		}		
 	}
 }

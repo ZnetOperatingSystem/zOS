@@ -36,6 +36,7 @@ enum INPUT_KEYS{
 	X = 0xAD,
 	Y = 0x95,
 	Z = 0xAC,
+	SPACE = 0x39,
 	NL = 0x1C
 };
 void keyboard_irq();
@@ -44,108 +45,111 @@ char kgetc(){
 	unsigned char sc;
 		sc = inportb(0x60);
 		if(sc == A){
-			return 'A';
+			return 'a';
 		}
 		else if (sc == B){
-			return 'B';
+			return 'b';
 		}
 		else if (sc == C){
-                        return 'C';
+                        return 'c';
                 }
 
 		else if (sc == D){
-                        return 'D';
+                        return 'd';
                 }
 
 		else if (sc == E){
-                        return 'E';
+                        return 'e';
                 }
 
 		else if (sc == F){
-                        return 'F';
+                        return 'f';
                 }
 
 		else if (sc == G){
-                        return 'G';
+                        return 'g';
                 }
 
 		else if (sc == H){
-                        return 'H';
+                        return 'h';
                 }
 
 		else if (sc == I){
-                        return 'I';
+                        return 'i';
                 }
 
 		else if (sc == J){
-                        return 'J';
+                        return 'j';
                 }
 
 		else if (sc == K){
-                        return 'K';
+                        return 'k';
                 }
 
 		else if (sc == L){
-                        return 'L';
+                        return 'l';
                 }
 
 		else if (sc == M){
-                        return 'M';
+                        return 'm';
                 }
 
 		else if (sc == N){
-                        return 'N';
+                        return 'n';
                 }
 
 		else if (sc == O){
-                        return 'O';
+                        return 'o';
                 }
 
 		else if (sc == P){
-                        return 'P';
+                        return 'p';
                 }
 
 		else if (sc == Q){
-                        return 'Q';
+                        return 'q';
                 }
 
 		else if (sc == R){
-                        return 'R';
+                        return 'r';
                 }
 
 		else if (sc == S){
-                        return 'S';
+                        return 's';
                 }
 
 		else if (sc == T){
-                        return 'T';
+                        return 't';
                 }
 
 		else if (sc == U){
-                        return 'U';
+                        return 'u';
                 }
 
 		else if (sc == V){
-                        return 'V';
+                        return 'v';
                 }
 
 		else if (sc == W){
-                        return 'W';
+                        return 'w';
                 }
 
 		else if (sc == X){
-                        return 'X';
+                        return 'x';
                 }
 
 		else if (sc == Y){
-                        return 'Y';
+                        return 'y';
                 }
 
 		else if (sc == Z){
-                        return 'Z';
+                        return 'z';
                 }
 		else if(sc == NL){
 			return '\n';
+		}
+		else if(sc == SPACE){
+			return ' ';
 		}
 		else if(sc == 0x00){
 			return '\001';
