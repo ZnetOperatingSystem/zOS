@@ -16,18 +16,20 @@ struct page{
 int allocated[(1024 * 1024)];
 struct page *findpage(struct page *pa,unsigned long esize){
 	unsigned long size;
-	int startmem = 0x00007E00;
-	int maxmem = 0x0007FFFF;
+	int startmem = 0xC0000000;
+	int maxmem = 0xFFFFFFFF;
 	int i = 0;
 	int currentmem = startmem;
 	struct page *pg;
+	//kprintf("MALLOC:searching\n");
 	while(1){
+		//kprintf("MALLOC:searching\n");
 		if(size >= esize)
 			break;
 		else if(allocated[i] != currentmem){
 			if(startmem != currentmem){
 				//currentmem++;
-				break;
+				
 			}
 			currentmem++;
 			size++;
@@ -100,6 +102,7 @@ void *malloc(unsigned long ssize){
 				start++;
 				i++;
 			}
+			//k//printf("MALLOC:found!\n");
 			return (void*)ret;
 		}
 		else{
@@ -116,6 +119,7 @@ void *malloc(unsigned long ssize){
 
 			}
 			pg->pos = (tmppg.pos);
+			//kprintf("MALLOC:found partial\n");
 		}
 	}
 }

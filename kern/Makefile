@@ -1,6 +1,5 @@
-CC=i386-elf-gcc
-AS=i386-elf-as
-NASM=nasm -f elf
+
+NASM=nasm -f elf32
 all:
 	$(CC) -c kmain.c -o kmain.o -nostdlib -I../include -ffreestanding -std=gnu99
 	$(CC) -c kloader.c -o kloader.o -nostdlib -I../include -ffreestanding

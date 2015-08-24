@@ -131,6 +131,7 @@ int nstrcmp(const char *s1,const char *s2){
 }
 void kernel_main(int a,char *b){
 	t_init();
+	ide_init();
 	int i = 0;
 	int commandnum = 4;
 	//char *mtest = malloc(80);
@@ -194,6 +195,10 @@ void kernel_main(int a,char *b){
 				c++;
 				i++;
 			}
+		}
+		else if(nstrcmp(str,"read") == 0){
+			i = 0;
+			ide_atapi_read(0,0,1,0,1);
 		}
 		else if(nstrcmp(str,"echo") == 0){
 			kprintf("%s\n",str);

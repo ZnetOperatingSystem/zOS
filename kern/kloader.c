@@ -12,8 +12,12 @@
 void kernel_loader_init(){
 	t_init();
 }
+void *fmalloc(unsigned long s){
+	char ret[s];
+	return (void *)ret;
+}
 char *kgets(){
-	char *args = malloc(1024);
+	char *args =fmalloc(80);
 	char oldc;
 	char c;
 	int i = 0;
@@ -55,8 +59,9 @@ void kernel_loader_main(){
 	kprintf("Libk (c) 2015 Zachary James Schlotman\n");
 	kprintf("Please Enter Any Arguments to pass to kernel\n");
 	kprintf("$>");
-	char *s = malloc(1024);
+
+	char s[80];
 	kstrcpy(s,kgets());
-	int hd = (int)0x00000475;
+	//int hd = (int)0x00000475;
 	kernel_main(countsp(s),s);
 }

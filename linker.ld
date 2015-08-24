@@ -38,7 +38,21 @@ SECTIONS
 		*(.bss)
 		*(.bootstrap_stack)
 	}
-
+	/*KERNEL_LMA = 0x0;
+	. = KERNEL_LMA;
+	KERNEL_VMA = 0x0;
+    .bootstrap :
+    {
+        bootstrap.o (.text)
+    }
+    .+= KERNEL_VMA;
+    .text : AT(ADDR(.text) - KERNEL_VMA)
+    {
+        _code = .;
+        *(EXCLUDE_FILE(*bootstrap.o) .text)
+        *(.rodata*)
+        . = ALIGN(4096);
+    }*/
 	/* The compiler may produce other sections, put them in the proper place in
 	   in this file, if you'd like to include them in the final kernel. */
 }

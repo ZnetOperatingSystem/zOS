@@ -7,6 +7,14 @@ unsigned long _strlen(const char *str){
 		ret++;
 	return ret;
 }
+void wait_irq(){
+	while(!ide_irq_invoked)
+		;
+	ide_irq_invoked = 0;
+}
+void ide_irq(){
+	ide_irq_invoked = 1;
+}
 unsigned char ide_read(unsigned char channel,unsigned char reg){
 	unsigned char ret;
 	if (reg > 0x07 && reg < 0x0C)
@@ -99,4 +107,54 @@ void ide_init(unsigned int BAR0, unsigned int BAR1, unsigned int BAR2, unsigned 
 	channels[ATA_SECONDARY].bmide = (BAR4 & 0xFFFFFFFC) + 8;
 	ide_write(ATA_PRIMARY,ATA_REG_CONTROL,2);
 	ide_write(ATA_SECONDARY,ATA_REG_CONTROL,2); 
+}
+void ide_atapi_read(unsigned char drive,unsigned int lba,unsigned char numsects,unsigned short selector,unsigned int edi){
+	unsigned int channel = ide_devices[drive].Channel;
+	unsigned int slavebit = ide_devices[drive].Drive;
+	unsigned int bus = channels[channel].base;
+	unsigned int words = 1024;
+	unsigned char err;
+	int i;
+	ide_write(channel,ATA_REG_CONTROL,channels[channel].nIEN = ide_irq_invoked = 0x0);
+	atapi_packet[0] = ATAPI_CMD_READ;
+	atapi_packet[1] = 0x0;
+	atapi_packet[2] = (lba >> 24) & 0xFF;
+	atapi_packet[3] = (lba >> 16) & 0xFF;
+	atapi_packet[4] = (lba >> 8) & 0xFF;
+	atapi_packet[5] = (lba >> 0) & 0xFF;
+	atapi_packet[6] = 0x00;
+        atapi_packet[7] = 0x00;
+        atapi_packet[8] = 0x00;
+        atapi_packet[9] = numsects;
+        atapi_packet[10] = 0x00;
+        atapi_packet[11] = 0x00;
+	ide_write(channel,ATA_REG_HDDEVSEL,slavebit << 4);
+	i = 0;
+	while(i < 4)
+		i++;
+	ide_read(channel,ATA_REG_ALTSTATUS);
+	ide_write(channel, ATA_REG_FEATURES, 0);
+	ide_write(channel,ATA_REG_LBA1,(words * 2) & 0xFF);
+	ide_write(channel,ATA_REG_LBA2,(words * 2) >> 8);
+	ide_write(channel,ATA_REG_COMMAND,ATA_CMD_PACKET);
+	if(err = ide_polling(channel,1)) return err;
+	asm("rep   outsw" : : "c"(6), "d"(bus), "S"(atapi_packet));
+	i = 0;
+	while (i < numsects){
+		//wait_irq();
+		if(err = ide_polling(channel,1)) return err;
+		asm("pushw %es");
+      		asm("mov %%ax, %%es"::"a"(selector));
+      		asm("rep insw"::"c"(words), "d"(bus), "D"(edi));
+		asm("popw %es");
+		edi +=(words *2);
+		i++;
+	}
+	//wait_irq();
+	while (ide_read(channel, ATA_REG_STATUS) & (ATA_SR_BSY | ATA_SR_DRQ))
+	      ;
+	return 0;
+}
+void ide_read_sectors(unsigned int drive,unsigned int lba,unsigned int edi, unsigned short es, unsigned char numsects){
+	
 }
