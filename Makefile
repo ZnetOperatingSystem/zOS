@@ -15,3 +15,10 @@ all:
 	make -C drivers
 	x86_64-elf-gcc -c bootstrap.S -o bootstrap.o 
 	$(CROSS)gcc  */*.o drivers/PCI/IDE/controller/*.o -o simp.kernel   -nostdlib -ffreestanding -T linker.ld
+clean:
+	make -C kern clean
+	make -C io clean
+	make -C mem clean
+	make -C lib clean
+	make -C drivers clean
+	make -C str clean

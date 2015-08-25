@@ -9,3 +9,5 @@ all:
 	$(AS) crti.S -o crti.o 
 	$(AS) crtn.S -o crtn.o
 	$(NASM) inportb.asm -o inportb.o
+clean:
+	rm *.o

@@ -131,7 +131,8 @@ int nstrcmp(const char *s1,const char *s2){
 }
 void kernel_main(int a,char *b){
 	t_init();
-	ide_init();
+	kprintf("Loading early kernel.\n");
+	ide_init(0x1F0, 0x3F6, 0x170, 0x376, 0x000);
 	int i = 0;
 	int commandnum = 4;
 	//char *mtest = malloc(80);
@@ -140,7 +141,7 @@ void kernel_main(int a,char *b){
 	char *commands[] = {"ls","help","memlist","echo"};
 	kprintf("\nSimple kernel x86\n");
 	kprintf("Arguments: %s\n",b);
-	kprintf("Initial Runlevel 1\n");
+	kprintf("Initial Runlevel K\n");
 	kprintf("Modprobe:");
 	//char *str = malloc(1024);
 	//kstrcpy(str,b);
@@ -198,7 +199,7 @@ void kernel_main(int a,char *b){
 		}
 		else if(nstrcmp(str,"read") == 0){
 			i = 0;
-			ide_atapi_read(0,0,1,0,1);
+			ide_read_sectors(0,1,1,1,1);
 		}
 		else if(nstrcmp(str,"echo") == 0){
 			kprintf("%s\n",str);

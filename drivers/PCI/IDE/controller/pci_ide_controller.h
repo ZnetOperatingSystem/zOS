@@ -33,8 +33,8 @@ extern void ide_init(unsigned int B0,unsigned int B1,unsigned int B2, unsigned i
 #define ATA_CMD_CACHE_FLUSH 0xE7
 #define ATA_CMD_CACHE_FLUSH_EXIT 0xEA
 #define ATA_CMD_PACKET 0xA0
-#define ATA_CMD_INDENT_PACK 0xA1
-#define ATA_CMD_INDENT 0xEC
+#define ATA_CMD_IDENT_PACK 0xA1
+#define ATA_CMD_IDENT 0xEC
 #define ATAPI_CMD_READ 0xA8
 #define ATAPI_CMD_EJECT 0x1B
 #define ATA_IDENT_DEVICE_T 0
@@ -90,14 +90,14 @@ unsigned char ide_buffer[2048] = {0};
 unsigned static char ide_irq_invoked = 0;
 unsigned static char atapi_packet[12] = {0x10,0,0,0,0,0,0,0,0,0,0,0};
 struct ide_dev{
-	unsigned char Reseved;
+	unsigned char Reserved;
 	unsigned char Channel;
 	unsigned char Drive;
 	unsigned short Type;
-	unsigned short signature;
+	unsigned short Signature;
 	unsigned short Capabilities;
-	unsigned int cmdsets;
-	unsigned int size;
+	unsigned int commandsets;
+	unsigned int Size;
 	unsigned char Model[41];
 }ide_devices[4];
 typedef struct ide_dev idedev_t;
