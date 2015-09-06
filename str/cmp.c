@@ -4,7 +4,7 @@ int strcmp(const char *str1,const char *str2){
 	int i = 0;
 	while(i < strlen(str1)){
 		if(str1[i] != str2[i])
-			return i;
+			return ++i;
 		else
 			continue;
 		i++;
@@ -15,7 +15,7 @@ int strncmp(const char *str1,const char *str2,ksize_t n){
 	int i = 0;
 	while(i < n){
 		if(str1[i] != str2[i])
-			return i;
+			return ++i;
 		else
 			continue;
 		i++;
@@ -28,7 +28,7 @@ int memcmp(const void *v1,const void *v2,ksize_t n){
 	int i = 0;
 	while(i < n){
 		if(s1[i] != s2[i])
-			return i;
+			return ++i;
 		else
 			continue;
 		i++;

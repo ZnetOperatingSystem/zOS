@@ -51,6 +51,7 @@ int countsp(char *s){
 	return ret;
 }
 void kernel_loader_main(){
+	//malloc_init();
 	kprintf("x86 Simple Kernel\n");
 	kprintf("(c) 2015 Zachary James Schlotman\n");
 	kprintf("Libc dist by newlib\n");

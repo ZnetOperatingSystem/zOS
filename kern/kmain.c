@@ -118,6 +118,43 @@ int char2int(char c){
 
 
 }
+int int2str(int i){
+	int c = 0;
+	char *buf = malloc(80);
+	int n;
+	int t;
+	int inc;
+	int bi =  i;
+	while(bi > 0){
+		t++;
+		bi/=10;
+	}
+	while(i > 0){
+		n = (i % 10);
+		if(n == 0)
+			buf[t - inc] = '0';
+		else if(n == 1)
+			buf[t - inc] = '1';
+		else if(n == 2)
+			buf[t - inc] = '2';
+		else if(n == 3)
+			buf[t - inc] = '3';
+		else if(n == 4)
+			buf[t - inc] = '4';
+		else if(n == 5)
+			buf[t - inc] = '5';
+		else if(n == 6)
+			buf[t - inc] = '6';
+		else if(n == 7)
+			buf[t - inc] = '7';
+		else if(n == 8)
+			buf[t - inc] = '8';
+		else if(n == 9)
+			buf[t - inc] = '9';
+		inc++;	
+		i/=10;
+	}
+}
 int nstrcmp(const char *s1,const char *s2){
 	int i = 0;
 	if(strlen(s1) != strlen(s2))

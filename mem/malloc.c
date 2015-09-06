@@ -13,7 +13,19 @@ struct page{
 	struct page *next;
 	int pos; 
 };
+
 int allocated[(1024 * 1024)];
+void malloc_init(){
+	int i = 0;
+	int startmem = 0xC0000000;
+	while(startmem < 0xFFFFFFFF){
+		if(startmem){
+			//allocated[i] = startmem;
+			i++;
+		}
+		startmem++;
+	}
+}
 struct page *findpage(struct page *pa,unsigned long esize){
 	unsigned long size;
 	int startmem = 0xC0000000;
