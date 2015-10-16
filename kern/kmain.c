@@ -5,7 +5,10 @@
 */
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <kernel/tty.h>
+#include <zfs.h>
+#include "../fs/zfs/zfs.h"
 unsigned long __strlen(const char *s1){
 	int len = 0;
 	while(s1[len] != 0)
@@ -166,7 +169,60 @@ int nstrcmp(const char *s1,const char *s2){
 	}
 	return 0;
 }
+void dump_args(){
+	kprintf("Drive Selection:");
+	int drive = ddrive();
+	if(drive == 0x00)
+		kprintf("0/PRIMARY\n");
+	else if(drive == 0x01)
+		kprintf("0/SECONDARY\n");
+	else
+		kprintf("Unkown\n");
+	kprintf("I/O Port:");
+	if(drive == 0x00)
+		kprintf("0x1FX\n");
+	else if(drive == 0x01)
+		kprintf("0x17X\n");
+	else
+		kprintf("Unkown\n");
+	kprintf("ZFS Offset\n");
+	int offset = zfs_scan(drive);
+	
+}
 void kernel_main(int a,char *b){
+	t_init();
+	kprintf("Detecting Hard Drives\n");
+	ide_init(0x1F0,0x3f6,0x170,0x376,0x000);
+	uint16_t drive = ddrive();
+	kprintf("Detecting Keyboards\n");
+	outb(0x60,0xF2);
+	kprintf("Initializing Devices\n");
+	outb(0x60,0xED);
+	outb(0x60,0xEE);
+	outb(0x1F0 + 0x02,0);
+	outb(0x1F0 + 0x03,0);
+	outb(0x1F0 + 0x04,0);
+	outb(0x1F0 + 0x05,0);
+	//outb(0x1F0 + 0x07,0xEC);
+	kprintf("Sent identify to Primary IDE Device\n");
+	uint8_t stat = inportb(0x1F0 + 0x07);
+	kprintf("Allocating memory for variables\n");
+	char cmdbuf;
+	kprintf("Testing Disk Drivers\n");
+	char buf[80];
+	//ata_read_master(buf,0,drive);
+	//kprintf("%s\n",buf);
+	kprintf("Scanning disk for ZosFS Signature\n");
+	int offset = zfs_scan();
+	kprintf("Scanning for end of partition\n");
+	int endoffset = zfs_scanend(drive,offset);
+	panic();
+	kprintf("Mounting Root FileSystem\n");
+	zfs_mount(offset,endoffset);
+	kprintf("Passing control to init Script\n");
+	exec_script("/init.initsh");
+}
+void kernel_main_old(int a,char *b){
 	t_init();
 	kprintf("Loading early kernel.\n");
 	ide_init(0x1F0, 0x3F6, 0x170, 0x376, 0x000);
@@ -192,8 +248,7 @@ void kernel_main(int a,char *b){
 	//}
 	if(b[0] == 'p' && b[1] == 'a' && b[2] == 0){
 		
-	}else
-		panic();
+	}
 	kprintf("Dropping into a shell\n");
 	char *str = malloc(80);
 	kprintf("$");
@@ -234,9 +289,17 @@ void kernel_main(int a,char *b){
 				i++;
 			}
 		}
+		else if(nstrcmp(str,"hlt") == 0){
+			kprintf("CPU Halted\n");
+			halt();
+		}
 		else if(nstrcmp(str,"read") == 0){
 			i = 0;
-			ide_read_sectors(0,1,1,1,1);
+			//ide_atapi_read(1,1,1,0,0);
+			char *buffer = malloc(1024);
+			io_read(0,0,1,buffer);
+			kprintf("%s\n",buffer);
+			//kprintf("%c\n",ic);
 		}
 		else if(nstrcmp(str,"echo") == 0){
 			kprintf("%s\n",str);

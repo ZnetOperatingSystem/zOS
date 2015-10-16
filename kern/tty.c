@@ -62,6 +62,18 @@ void t_putc(char c){
 		}
 	}
 }
+void t_cputc(char c,uint8_t colour){
+	if(c != '\n')
+		putent(c,colour,tc,tr);
+	if(++tc == 80 || c == '\n'){
+		tc = 0;
+		if(++tr == 25){
+			tr = 0;
+			tc = 0;
+			t_init();
+		}
+	}
+}
 void t_write(const char *str,ksize_t s){
 	int i = 0;
 	while(i < s){
@@ -72,4 +84,11 @@ void t_write(const char *str,ksize_t s){
 void t_writestr(const char *str){
 	int i = 0;
 	t_write(str,strlen(str));
+}
+void t_writecolour(const char *str,uint8_t colour){
+	int i = 0;
+	while(i < strlen(str)){
+		t_cputc(str[i],colour);
+		i++;
+	}
 }

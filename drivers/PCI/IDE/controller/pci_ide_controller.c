@@ -1,6 +1,9 @@
+//OBSOLETE
 #include "pci_ide_controller.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
+//#include <asm.h>
 unsigned long _strlen(const char *str){
 	unsigned long ret = 0;
 	while(str[ret] != 0)
@@ -52,25 +55,16 @@ void ide_write(unsigned char channel,unsigned char reg,unsigned char data){
 	if (reg > 0x07  && reg < 0x0C)
 		ide_write(channel,ATA_REG_CONTROL, 0x80 | channels[channel].nIEN);
 	else if(reg < 0x08)
-		outportb(channels[channel].base + reg - 0x00,data);
+		outb(channels[channel].base + reg - 0x00,data);
 	else if(reg < 0x0C)
-		outportb(channels[channel].base + reg - 0x06,data);
+		outb(channels[channel].base + reg - 0x06,data);
 	else if(reg < 0x0E)
-		outportb(channels[channel].ctrl + reg - 0x0A,data);
+		outb(channels[channel].ctrl + reg - 0x0A,data);
 	else if(reg < 0x16)
-		outportb(channels[channel].bmide + reg - 0x0E,data);
+		outb(channels[channel].bmide + reg - 0x0E,data);
 	if(reg > 0x07 && reg < 0x0C)
 		ide_write(channel,ATA_REG_CONTROL,channels[channel].nIEN);
 }
-/*unsigned char *ide_read_buffer(unsigned char channel,unsigned char reg,unsigned int bytestoread){
-	unsigned char ret[bytestoread];
-	int i = 0;
-	while(i < bytestoread){
-		ret[i] = ide_read(channel,reg);
-		i++;
-	}
-	return ret;
-}*/
 //Borrowed from os dev really tired will write my own in future.
 unsigned char ide_polling(unsigned char channel, unsigned int advanced_check) {
    for(int i = 0; i < 4; i++)
@@ -80,7 +74,7 @@ unsigned char ide_polling(unsigned char channel, unsigned int advanced_check) {
    if (advanced_check) {
       unsigned char state = ide_read(channel, ATA_REG_STATUS);
       if (state & ATA_SR_ERROR)
-         return 2;
+      	panic();
       if (state & ATA_SR_DF)
          return 1;
       if ((state & ATA_SR_DRQ) == 0)
@@ -88,12 +82,12 @@ unsigned char ide_polling(unsigned char channel, unsigned int advanced_check) {
  
    }
  
-   return 0; // No Error.
+   return 0;
  
 }
 //End Borrowed
 void print_error(){
-	kprintf("OH SHIT I/O Error!\nPanicing\n");
+	kprintf("I/O Error");
 	panic();
 }
 
@@ -168,10 +162,7 @@ void ide_init(unsigned int BAR0, unsigned int BAR1, unsigned int BAR2, unsigned 
  
    for (i = 0; i < 4; i++)
       if (ide_devices[i].Reserved == 1) {
-         kprintf(" Found %s Drive %dGB - %s\n",
-            (const char *[]){"ATA", "ATAPI"}[ide_devices[i].Type],         /* Type */
-            ide_devices[i].Size / 1024 / 1024 / 2,               /* Size */
-           ide_devices[i].Model);
+         kprintf(" Found %s Drive %dGB - %s\n",(const char *[]){"ATA", "ATAPI"}[ide_devices[i].Type],ide_devices[i].Size / 1024 / 1024 / 2,ide_devices[i].Model);
       }
 }
 int ide_atapi_read(unsigned char drive,unsigned int lba,unsigned char numsects,unsigned short selector,unsigned int edi){
@@ -353,3 +344,84 @@ void ide_read_sectors(unsigned int drive,unsigned int lba,unsigned int edi, unsi
   		 }
 	}
 }
+int wait(unsigned short s){
+	while(inb(s + 0x206) & 0x80);
+	return 0;
+}
+static inline void _outb(uint16_t port,uint8_t val){
+	asm volatile("outb %0, %1" : : "a"(val),"Nd"(port));
+}
+int common(int drive, int numblock,int count){
+	wait(0x1F0);
+	_outb(0x1F1,0x00);
+	_outb(0x1F2,count);
+	_outb(0x1F3,(unsigned char)numblock);
+	_outb(0x1F4,(unsigned char)numblock >> 8);
+	_outb(0x1F5,(unsigned char)numblock >> 16);
+	_outb(0x1F6,0xE0 |(drive << 4)|(numblock >> 24) & 0x0F);
+	return 0;	
+}
+static inline uint16_t inw(uint32_t s){
+	uint16_t ret;
+	asm volatile("inw %%dx, %%ax": "=a"(ret):  "d"(s));
+	return ret;
+}
+static inline void outw(int port,uint8_t val){
+	asm volatile("outw %%ax, %%dx" : : "d"(port),"a"(val));
+}
+static inline uint8_t _inb(uint16_t port){
+	uint8_t ret;
+	asm volatile( "inb %1,%0" : "=a"(ret) :"Nd"(port));
+	return ret;
+}
+int io_read(int drive,int numblock,int count,char *buf){
+	uint16_t tmpword;
+	int idx;
+	int c;
+	common(drive,numblock,count);
+	_outb(0x1F7,0x20);
+	wait(0x1F0);
+	while(!(_inb(0x1F7) & 0x08));
+	while(idx < (256 * count)){
+		tmpword = inw(0x1F0);
+		buf[idx * 2] = (unsigned char) tmpword;
+		buf[idx * 2 + 1] = (unsigned char)(tmpword >> 8);
+		++idx;
+	}
+	return count;
+}
+int io_getcnt(int drive){
+	int ret;
+	while(inw(0x1F0))
+		ret++;
+	return ret;
+}
+int io_write(int drive,int numblock,int count,char * buf){
+	int idx;
+	uint16_t tmpword;
+	common(drive,numblock,count);
+	_outb(0x1F7,0x30);
+	wait(0x1F0);
+	while(!(_inb(0x1F7) & 0x08));
+	while(idx < count){
+		tmpword = (buf[idx * 2 + 1] >> 8) | buf[idx * 2];
+		outw(0x1F0,tmpword);
+		++idx;
+	}
+	return count;
+}/*
+int _ide_read(int pos,int *buf,int size,int drive){
+	int count = size;
+	if(buffer ==  NULL)
+		return -1;
+	int offset = (int)pos;
+	int bl_b,bl_e,blocks;
+	bl_b = (offset / 612);
+	bl_e = ((offset +count)/512);
+	blocks = bl_end - bl_begin + 1;
+	char *block_buff = malloc(blocks * 512);
+	io_read(drive,blocks,block_buff);
+	memcpy((char*)buf,((int)block_buff + ((int)offset % 512),count));
+	return count;
+}
+*/

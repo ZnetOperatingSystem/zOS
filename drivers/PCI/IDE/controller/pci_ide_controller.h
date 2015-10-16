@@ -5,7 +5,7 @@ extern void ide_init(unsigned int B0,unsigned int B1,unsigned int B2, unsigned i
 #define ATA_SR_BSY 0x80 /*Drive is busy*/
 #define ATA_SR_RDY 0x40 /*Drive is read*/
 #define ATA_SR_DF 0x20 /*Write fault*/
-#define ATA_SR_DSC 0X10 /*Seek complete*/
+#define ATA_SR_DSC 0x10 /*Seek complete*/
 #define ATA_SR_DRQ 0x8 /*Data request ready*/
 #define ATA_SR_CORR 0x04 /*Corrected data*/
 #define ATA_SR_IDX 0x02 /*Inlex*/

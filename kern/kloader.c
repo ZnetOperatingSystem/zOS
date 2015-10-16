@@ -9,6 +9,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <kernel/tty.h>
+#include <kernel/vga.h>
 void kernel_loader_init(){
 	t_init();
 }
@@ -52,12 +53,33 @@ int countsp(char *s){
 }
 void kernel_loader_main(){
 	//malloc_init();
-	kprintf("x86 Simple Kernel\n");
+	int i = 0;
+	while(i < 4){
+		int i1 = 0;
+		while(i1 < 25){
+			t_cputc(' ',COLOUR_BLUE);
+			++i1;
+		}
+		i++;
+	}
+	i = 0;
+	while(i < 25){
+		t_cputc(' ',COLOUR_WHITE);
+		i++;
+	}
+	i = 0;
+	while(i < 23){
+		t_cputc(' ',COLOUR_BLUE);
+		i++;	
+	}
+	t_cputc(' ',COLOUR_WHITE);
+	t_cputc(' ',COLOUR_BLUE);
+	/*kprintf("x86 Simple Kernel\n");
 	kprintf("(c) 2015 Zachary James Schlotman\n");
 	kprintf("Libc dist by newlib\n");
-	int i = 123;
 	kprintf("%d\n",i);
-	kprintf("Libk (c) 2015 Zachary James Schlotman\n");
+	kprintf("Libk (c) 2015 Zachary James Schlotman\n");*/
+
 	kprintf("Please Enter Any Arguments to pass to kernel\n");
 	kprintf("$>");
 

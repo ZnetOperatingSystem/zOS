@@ -4,5 +4,7 @@ void msleep(unsigned long time){
 		;
 }
 void sleep(unsigned long time){
-	int stime = time * 1000000;
+	int stime = time * 100000000;
+	for(int i = 0; i < time;i++)
+		;
 }

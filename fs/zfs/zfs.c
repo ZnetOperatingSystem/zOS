@@ -1,116 +1,97 @@
-/*
-*Znet File System Prototype
-*Not for actual use
-*(c)2015 Zachary James Schlotman
-*WIP
-*/
 #include "zfs.h"
-#include <stdlib.h>
-int atoic(char s){
-	if(s == '0')
-		return 0;
-	else if(s == '1')
-		return 1;
-	else if(s == '2')
-		return 2;
-	else if(s == '3')
-		return 3;
-	else if(s == '4')
-		return 4;
-	else if(s == '5')
-		return 5;
-	else if(s == '6')
-		return 6;
-	else if(s == '7')
-		return 7;
-	else if(s == '8')
-		return 8;
-	else if(s == '9')
-		return 9;
-	else
-		return -1;
-}
-void assemble_fs(char *rfs){
-	struct zfs_block *blks;
-	struct zfs_file *files;
-	struct zfs_dir *dirs;
-	struct zfs_block _blks;
-	struct zfs_file _files;
-	struct zfs_dir _dirs;
+#include <stdint.h>
+int scan_for_sig(char *buf){
 	int i = 0;
-	int i1 = 0;
-	int i2 = 0;
-	int sigcnt = 0;
-	int bb = 0;
-	int rootfs = 0;
-	int ind = 0;
-	while(1){
-		if(rfs[i] == root_sig[0]){
-			i2 = i;
-			while(i1 < 17){
-				if(rfs[i2] == root_sig[i1])
-					sigcnt++;
-				
-				else{
-					bb = 1;
-				}
-				i2++;
-				i1++;
-			}
-			if(bb != 1){
-				rootfs = 1;
+	while(i < 256){
+		if(buf[i] == 0x26){
+			//kprintf("Started\n");
+			int i1 = 0;
+			if(buf[(i + 1)] == 0x01 && buf[(i + 2)] == 0x03 && buf[(i + 3)] == 0x08)
+				i1 = 4;
+			if(i1 == 4){
+				kprintf("Found Valid ZFS Signature!\n");
+				return 1;
 			}
 		}
-		else if(rootfs == 1){
-			if(rfs[i] == dir_sig){
-				struct zfs_dir tmpdir;
-				tmpdir.sig = dir_sig;
-			 	i1 = i;
-				while(atoic(rfs[i1]) != -1)
-					i1++;
-				int diff = (i1 - i);
-				i1 = 0;
-				i2 = i;
-				char s[diff];
-				while(i1 < diff){
-					s[i1] = rfs[i2];
-					i1++;
-					i2++;
-				}
-				int len = atoi(s);
-				tmpdir.path_len = len;
-				i1 = 0;
-				char *path = malloc(1024);
-				while(i1 < len){
-					kstrcat(path,&rfs[i2]);
-					i2++;
-					i1++;
-				}
-				tmpdir.path = path;
-				int i3 = i2;
-				while(1){
-					struct zfs_file tmpf;
-					if(rfs[i3] == f_sig[0] && rfs[i3 + 1] == f_sig[1]){
-						
-					}
-					i3++;
-				}
-				
-			}
-		}
-		else
-			break;	
 		i++;
 	}
+	return 0;
 }
-void get_fs_info(struct zfs_file *files,struct zfs_dir *dirs){
-	struct zfs_file _files = *(files);
-	struct zfs_dir _dirs = *(dirs);
-	struct zfs_block *block;
+int scan_for_esig(char *buf){
+	int i = 0;
+	while(i < 256){
+		if(buf[i] == 0xAA){
+			if(buf[(i + 1)] == 0x11 && buf[(i + 2)] == 0x00 && buf[(i+3)] == 0x01){
+				kprintf("Found Full ZFS Disk Partition\n");
+				return 1;
+			}
+		}
+		i++;
+	}
+	return 0;
+}
+int zfs_scan(){
+	int i = 0;
+	char buf[256];
+	uint32_t address = 0x00;
+	while(i < 256){
+		buf[i] = 0;
+		i++;
+		
+	}
+	i = 0;
+	int ret = 0;
+	uint16_t drive = ddrive();
+	while(1){
+		ata_read_master(buf,i,drive);
+		//kprintf("%s\n",buf);
+		int i2 = 0;
+		while(i2 < 256){
+			//kprintf("%c",buf[i2]);
+			i2++;
+		}
+		//panic();
+		//kprintf("e\n");
+		int b =	scan_for_sig(buf);
+		if(b == 1)
+			return ret;
+		int i1 = 0;
+		while(i < 256){
+			buf[i] = 0;
+			i++;
+		}
+		ret++;
+		//buf = malloc(256);
+		i++;
+	}
+	//kprintf("_Exec\n");
+	return i;	
+
+}
+int zfs_scanend(uint16_t drive,int offset){
+	kprintf("Exec\n");
+	int i = 0;
+	char buf[256];
+	kprintf("exec\n");
+	int address = offset;
+	while(1){
+		//kprintf(".");
+		if(ata_read_master(buf,address,drive) == -1)
+			return -1;
+		int b = scan_for_esig(buf);
+		if(b == 1)
+			break;
+		int i1 = 0;
+		while(i1 < 256){
+			buf[i1] = 0;
+			i1++;
+		}
+		address++;
+	}
+	return address;
+}
+zfs_mount(int offset,int end){
+	int ba = zfs_scan(0);
+	int be = zfs_scanend(0,ba);
 	
-}
-mount_zfs(){
-	struct zfs_file *files;
-	struct zfs_dir *dirs;
-	get_fs_info(files,dirs);
 }

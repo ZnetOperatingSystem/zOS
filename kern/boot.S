@@ -1,8 +1,8 @@
-.set ALIGN,    1<<0             # align loaded modules on page boundaries
-.set MEMINFO,  1<<1             # provide memory map
-.set FLAGS,    ALIGN | MEMINFO  # this is the Multiboot 'flag' field
-.set MAGIC,    0x1BADB002       # 'magic number' lets bootloader find the header
-.set CHECKSUM, -(MAGIC + FLAGS) # checksum of above, to prove we are multiboot
+.set ALIGN,    1<<0
+.set MEMINFO,  1<<1
+.set FLAGS,    ALIGN | MEMINFO
+.set MAGIC,    0x1BADB002
+.set CHECKSUM, -(MAGIC + FLAGS)
 .section .multiboot
 .align 4
 .long MAGIC
@@ -10,11 +10,12 @@
 .long CHECKSUM
 .section .bootstrap_stack, "aw", @nobits
 stack_bottom:
-.skip 16384 # 16 KiB
+.skip 16384 
 stack_top:
 .section .text
 .global _start
 .type _start, @function
+BOOTSEG = 0x07c0
 _start:
 	movl $stack_top, %esp
 	call kernel_loader_init

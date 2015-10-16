@@ -15,6 +15,8 @@ global inportb
 global inb
 global outportb
 global outb 
+global inw
+global outw
 ;
 ; Function: inportb
 ; reads a byte from an x86 i/o port
@@ -42,3 +44,4 @@ outb:
          MOV AL, [ESP+2*4]           ; AL = stack(2)
          OUT DX, AL                  ; write
          RET
+
