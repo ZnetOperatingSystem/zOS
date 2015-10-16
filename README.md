@@ -1,4 +1,4 @@
-# Simple-Kernel
+# zOS
 This is a simple kernel for people to build off of.
 If you'd wish to contribute to the project please just email me @ znet12345678@gmail.com
 If you'd like to clone this project and make modifications to it and publish it somewhere else that is 100% okay. A little bit of credit would be nice,but it's optional.
