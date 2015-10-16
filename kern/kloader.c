@@ -53,7 +53,7 @@ int countsp(char *s){
 }
 void kernel_loader_main(){
 	//malloc_init();
-	int i = 0;
+	/*int i = 0;
 	while(i < 4){
 		int i1 = 0;
 		while(i1 < 25){
@@ -73,13 +73,13 @@ void kernel_loader_main(){
 		i++;	
 	}
 	t_cputc(' ',COLOUR_WHITE);
-	t_cputc(' ',COLOUR_BLUE);
+	t_cputc(' ',COLOUR_BLUE);*/
 	/*kprintf("x86 Simple Kernel\n");
 	kprintf("(c) 2015 Zachary James Schlotman\n");
 	kprintf("Libc dist by newlib\n");
 	kprintf("%d\n",i);
 	kprintf("Libk (c) 2015 Zachary James Schlotman\n");*/
-
+	kprintf("Znet Operating System Open Source\n(c)2015 Zachary James Schlotman\n\n\n");
 	kprintf("Please Enter Any Arguments to pass to kernel\n");
 	kprintf("$>");
 

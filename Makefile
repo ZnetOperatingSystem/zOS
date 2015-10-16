@@ -18,8 +18,8 @@ all:
 	@make -C fs
 	@echo "CC bootstrap.o"
 	@x86_64-elf-gcc -c bootstrap.S -o bootstrap.o 
-	@echo "CCLD simp.kernel"
-	@$(CROSS)gcc drivers/ata/*.o drivers/PCI/IDE/controller/*.o */*.o fs/zfs/*.o $(CRTBEG) $(CRTEND) -o simp.kernel   -nostdlib -ffreestanding -T linker.ld
+	@echo "CCLD zos_kernel"
+	@$(CROSS)gcc drivers/ata/*.o drivers/PCI/IDE/controller/*.o */*.o fs/zfs/*.o $(CRTBEG) $(CRTEND) -o zOS_kernel   -nostdlib -ffreestanding -T linker.ld
 clean:
 	make -C kern clean
 	make -C io clean
