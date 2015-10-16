@@ -9,10 +9,10 @@ To boot the kernel with grub2 copy the kernel to / and the config is<br>
 menuconfig "Simple-Kernel"{<br>
   set root='(hdX,Y)'<br>
   multiboot /simp.kernel<br>
-}
-Build Instructions:
-On UNIX/LINUX:
-  Just type make
-On Windows/NT
-  Install cygwin
-  work from there
+}<br>
+Build Instructions:<br>
+On UNIX/LINUX:<br>
+  Just type make<br>
+On Windows/NT<br>
+  Install cygwin<br>
+  work from there<br>
