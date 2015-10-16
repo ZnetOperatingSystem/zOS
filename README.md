@@ -10,3 +10,9 @@ menuconfig "Simple-Kernel"{<br>
   set root='(hdX,Y)'<br>
   multiboot /simp.kernel<br>
 }
+Build Instructions:
+On UNIX/LINUX:
+  Just type make
+On Windows/NT
+  Install cygwin
+  work from there
