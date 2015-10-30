@@ -190,10 +190,16 @@ void dump_args(){
 	
 }
 void kernel_main(int a,char *b){
+	if(strcmp(b,"s") == 0)
+		zsh();
 	t_init();
 	kprintf("Detecting Hard Drives\n");
 	ide_init(0x1F0,0x3f6,0x170,0x376,0x000);
-	uint16_t drive = ddrive();
+	uint16_t drive;
+	if(strcmp(b,"fp") == 0)
+		drive = 0x00;
+	else
+		drive = ddrive();
 	kprintf("Detecting Keyboards\n");
 	outb(0x60,0xF2);
 	kprintf("Initializing Devices\n");
@@ -213,7 +219,11 @@ void kernel_main(int a,char *b){
 	//ata_read_master(buf,0,drive);
 	//kprintf("%s\n",buf);
 	kprintf("Scanning disk for ZosFS Signature\n");
-	int offset = zfs_scan();
+	int offset;
+	if(strcmp(b,"fp") == 0)
+		offset = zfs_scan(1);
+	else
+		offset = zfs_scan(0);
 	kprintf("Scanning for end of partition\n");
 	int endoffset = zfs_scanend(drive,offset);
 	panic();

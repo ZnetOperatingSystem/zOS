@@ -15,7 +15,7 @@ struct zfs_supblk{
 	struct zfs_blk *blks;
 	struct zfs_rootblk rblk;
 };
-int zfs_scan();
+int zfs_scan(int force);
 int zfs_scanend(uint16_t drive,int offset);
 int zfs_mount(int offset,int end);
 int zfs_as();

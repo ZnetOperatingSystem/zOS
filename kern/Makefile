@@ -28,5 +28,7 @@ all:
 	@$(CC) -c panic.c -o panic.o -nostdlib -I../include -ffreestanding
 	@echo "AS bootl.o"
 	@$(NASM) bootl.asm -o bootl.o
+	@echo "CC shell.o"
+	@$(CC) -c shell.c -o shell.o -nostdlib -ffreestanding -I../include
 clean:
 	rm *.o

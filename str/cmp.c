@@ -5,8 +5,8 @@ int strcmp(const char *str1,const char *str2){
 	while(i < strlen(str1)){
 		if(str1[i] != str2[i])
 			return ++i;
-		else
-			continue;
+		//else
+		//	continue;
 		i++;
 	}
 	return 0;
@@ -16,8 +16,8 @@ int strncmp(const char *str1,const char *str2,ksize_t n){
 	while(i < n){
 		if(str1[i] != str2[i])
 			return ++i;
-		else
-			continue;
+		//else
+		//	continue;
 		i++;
 	}
 	return 0;

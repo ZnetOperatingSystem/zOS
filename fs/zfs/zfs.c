@@ -30,7 +30,7 @@ int scan_for_esig(char *buf){
 	}
 	return 0;
 }
-int zfs_scan(){
+int zfs_scan(int force){
 	int i = 0;
 	char buf[256];
 	uint32_t address = 0x00;
@@ -41,9 +41,14 @@ int zfs_scan(){
 	}
 	i = 0;
 	int ret = 0;
-	uint16_t drive = ddrive();
+	uint16_t drive;// = ddrive();
+	if(force == 1)
+		drive =  0x00;
+	else
+		drive = ddrive();
 	while(1){
 		ata_read_master(buf,i,drive);
+		kprintf(".");
 		//kprintf("%s\n",buf);
 		int i2 = 0;
 		while(i2 < 256){
